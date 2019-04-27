@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>axblog - base on flask</title>
+    <link href="/static/css/hacker.css" rel="stylesheet">
+    <link rel="stylesheet" crossorigin="anonymous" href="/static/css/main.css">
+    <style>
+        .tall-row {
+            margin-top: 40px;
+        }
+
+        .modal {
+            position: relative;
+            top: auto;
+            right: auto;
+            left: auto;
+            bottom: auto;
+            z-index: 1;
+            display: block;
+        }
+    </style>
+    <script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <!--页眉航栏-->
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="http://localhost:5000/">axblog - base on flask & bootstrap</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/admin" target="_blank">admin</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <!--article-->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="well">
+                    <form class="form-horizontal">
+                        <fieldset>
+                            <h1>{{ article.article_title }}</h1>
+                            <hr>
+                            <p>{{ article.article_content }}</p>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--页脚-->
+        <div class="row tall-row">
+            <div class="col-md-12">
+                <p>Power by xxlin. © 2019</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

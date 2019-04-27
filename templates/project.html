@@ -1,0 +1,25 @@
+{% extends "indexBase.html" %}
+{% block project %}
+<!--project-->
+<div class="row">
+    <div class="col-lg-12">
+        <ul class="list-group">
+            {% for project in projects %}
+            <!-- Github stars script -->
+            <script>
+                $(document).ready(function () {
+                    $.getJSON("https://api.github.com/repos/H4ckForJob/{{ project.name }}", function (data) {
+                        var stars = data['stargazers_count'];
+                        $("#{{ project.name }}stars").text(stars + " stars");
+                    });
+                });
+            </script>
+            <li class="list-group-item">
+                <span class="badge" id="{{ project.name }}stars"></span>
+                <a href="https://github.com/H4ckForJob/{{ project.name }}" target="_blank">{{ project.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>axblog - base on flask</title>
+    <link href="/static/css/hacker.css" rel="stylesheet">
+    <link rel="stylesheet" crossorigin="anonymous" href="/static/css/main.css">
+    <style>
+        .tall-row {
+            margin-top: 40px;
+        }
+
+        .modal {
+            position: relative;
+            top: auto;
+            right: auto;
+            left: auto;
+            bottom: auto;
+            z-index: 1;
+            display: block;
+        }
+    </style>
+    <script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <!--页眉航栏-->
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="http://localhost:5000/">axblog - base on flask & bootstrap</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/admin" target="_blank">admin</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!--主体-->
+    <div class="container">
+        <!-- base tab导航 -->
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="nav nav-tabs">
+                    <li class=""><a aria-expanded="false" href="home#home">Home</a></li>
+                    <li class=""><a aria-expanded="false" href="story#story">Story</a></li>
+                    <li class=""><a aria-expanded="false" href="project#project">Project</a></li>
+                    <li class=""><a aria-expanded="false" href="ujssec#ujssec">Ujs-sec</a></li>
+                    <li class=""><a aria-expanded="false" href="friend#friend">Friend</a></li>
+                </ul>
+                <div id="myTabContent" class="tab-content">
+                    <div class="tab-pane fade active in" id="home">
+                        {% block home %}
+                        {% endblock %}
+                    </div>
+                    <div class="tab-pane fade active in" id="story">
+                        {% block story %}
+                        {% endblock %}
+                    </div>
+                    <div class="tab-pane fade active in" id="project">
+                        {% block project %}
+                        <p></p>
+                        {% endblock %}
+                    </div>
+                    <div class="tab-pane fade active in" id="ujssec">
+                        {% block ujssec %}
+                        <p></p>
+                        {% endblock %}
+                    </div>
+                    <div class="tab-pane fade active in" id="friend">
+                        {% block friend %}
+                        <p></p>
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--页脚-->
+        <div class="row tall-row">
+            <div class="col-md-12">
+                <p>Power by xxlin. © 2019</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
