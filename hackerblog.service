@@ -6,10 +6,10 @@ After=network.target
 User=root
 Group=root
 WorkingDirectory=/root/hackerBlog
-ExecStart=uwsgi --ini hackerblog.ini
+ExecStart=/usr/local/bin/uwsgi --ini /root/hackerBlog/hackerblog.ini
 
 PIDFile=/run/hackerblog.pid
-ExecReload=uwsgi --reload /run/hackerblog.pid
+ExecReload=/usr/local/bin/uwsgi --reload /run/hackerblog.pid
 ExecStop=-/sbin/start-stop-daemon --quiet --stop --retry QUIT/5 --pidfile /run/hackerblog.pid
 TimeoutStopSec=3
 KillMode=mixed
