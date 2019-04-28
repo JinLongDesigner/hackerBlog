@@ -1,0 +1,18 @@
+[Unit]
+Description=uWSGI instance to server hackerBlog
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/root/hackerBlog
+ExecStart=uwsgi --ini hackerblog.ini
+
+PIDFile=/run/hackerblog.pid
+ExecReload=uwsgi --reload /run/hackerblog.pid
+ExecStop=-/sbin/start-stop-daemon --quiet --stop --retry QUIT/5 --pidfile /run/hackerblog.pid
+TimeoutStopSec=3
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target
