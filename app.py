@@ -41,8 +41,7 @@ def storyView():
 def projectView():
     projects = []
     projects.append(project('dirmap'))
-    projects.append(project('fuzzdb'))
-    projects.append(project('fuzzdb-1'))
+    projects.append(project('hackerblog'))
     projects.append(project('SecLists'))
     return render_template("project.html",projects=projects)
 
