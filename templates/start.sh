@@ -1,0 +1,2 @@
+systemctl restart hackerblog
+systemctl restart nginx
