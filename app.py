@@ -88,6 +88,7 @@ def deleteArticleView(article_id):
     flash('Delete article succeed!')
     return redirect(url_for('adminArticlesView'))
 
+#小彩蛋
 @app.route('/AreYouAHacker/<string:msg>')
 def hackerMsg(msg):
     nowtime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -95,6 +96,23 @@ def hackerMsg(msg):
     with open('msg.txt','a+',encoding='utf-8') as msg_file:
         msg_file.write('msg:{} ip:{} time:{}\n'.format(msg,ip,nowtime))
     return render_template('succeed.html',msg=msg)
+
+#小工具
+@app.route('/rmre')
+def rmre():
+    return render_template('rmre.html')
+
+@app.route('/htmlencode')
+def htmlencode():
+    return render_template('htmlencode.html')
+
+@app.route('/xsshex')
+def xsshex():
+    return render_template('xsshex.html')
+
+@app.route('/base64')
+def base64():
+    return render_template('base64.html')
 
 if __name__ == '__main__':
     app.run()
