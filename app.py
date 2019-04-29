@@ -42,7 +42,6 @@ def projectView():
     projects = []
     projects.append(project('dirmap'))
     projects.append(project('hackerblog'))
-    projects.append(project('SecLists'))
     return render_template("project.html",projects=projects)
 
 @app.route('/ujssec')
@@ -88,6 +87,14 @@ def deleteArticleView(article_id):
     db.session.commit()
     flash('Delete article succeed!')
     return redirect(url_for('adminArticlesView'))
+
+@app.route('/AreYouAHacker/<string:msg>')
+def hackerMsg(msg):
+    nowtime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    ip = request.remote_addr
+    with open('msg.txt','a+',encoding='utf-8') as msg_file:
+        msg_file.write('msg:{} ip:{} time:{}\n'.format(msg,ip,nowtime))
+    return render_template('succeed.html',msg=msg)
 
 if __name__ == '__main__':
     app.run()
