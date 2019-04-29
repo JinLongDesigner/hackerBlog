@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>xss编码转换器</title>
+    <script>
+    //提示框
+        function tips(param){
+            str=document.getElementById('tip');
+            switch(param){
+                case "&#":
+                    str.innerHTML="提示：这个前缀只在html标签里才有效哦";
+                break;
+ 
+                case "bfstrin":
+                    str.innerHTML="提示：对对，就是这里，输入需要编码的字符吧，例如：alert()";
+                break;
+ 
+                case "bfstrout":
+                    str.innerHTML="提示：写好要转码的字符了吧，选择前缀后缀，以及位数哦。";
+                break;
+ 
+                case "\\x":
+                    str.innerHTML="提示：这个前缀在eval里面有效哦，注意：必须选择16进制。";
+                break;
+ 
+                case "\\u":
+                    str.innerHTML="提示：这个前缀在eval里面有效哦，注意：必须选择16进制,只能是四位（自动改好）。";
+                break;
+ 
+                case "\\":
+                    str.innerHTML="提示：这个在css里面有效哦，但是只要ie6以前的浏览器才支持，Orz。";
+                break;
+ 
+                case "%":
+                    str.innerHTML="提示：这个放在url里有效哦，%bf%27可是能干掉GBK的。";
+                break;
+ 
+                case " ":
+                    str.innerHTML="提示：这个。。你竟然不要前缀了。";
+                break;                
+ 
+                case "af":
+                    str.innerHTML="提示：这个只能配合&#用，而且可有可无。";
+                break;
+ 
+                case "jz":
+                    str.innerHTML="提示：想换什么进制，eval只支持8进制和16进制，html标签支持10进制和16进制。";
+                break;                
+ 
+                case "num":
+                    str.innerHTML="提示：html实体编码(&#)里面，ascii码前面可以任意插0，别的都不行。";
+                break;                
+ 
+                case "go":
+                    str.innerHTML="提示：期待很久了吧，那啥，那个，失败了也和我没关系。。";
+                break;                
+ 
+                case "no":
+                    str.innerHTML="提示：别，千万别，别按这个按钮，地球会毁灭。";
+                break;
+            }
+        }
+ 
+    //获取参数
+        function getparam(){
+            var bf=document.getElementById('bf').value;
+            var af=document.getElementById('af').value;
+            var jz=document.getElementById('jz').value;
+            var num=document.getElementById('num').value;
+            var param=[];
+            param[0]=bf;
+            param[1]=af;
+            param[2]=jz;
+            param[3]=num;
+            return param;    
+        }
+ 
+    //取数，转ascii
+        function enasc(){
+            enstr=document.getElementById('bfstr').value;
+            var bfstrarr=new Array();
+            for(i=0;i<enstr.length;i++){
+                tmpstr=enstr.substr(i,1);
+                bfstrarr[i]=tmpstr.charCodeAt();
+            }
+            return bfstrarr;
+        }
+ 
+    //编码主函数
+        function enxsscode(){
+            var param=getparam();
+            var bfstrarr=enasc();
+            var destr="";
+            for(i=0;i<bfstrarr.length;i++){
+                bfstrarr[i]=bfstrarr[i].toString(param[2]);   //换进制
+                var bu=0;
+                if(param[0]=="\\u")
+                    bu=4-String(bfstrarr[i]).length+1;
+                else
+                    bu=param[3]-String(bfstrarr[i]).length+1;
+                 
+                if(param[2]==16 && param[0]=="&#")
+                    destr+=param[0]+"x"+new Array(bu).join('0')+""+bfstrarr[i]+""+param[1];
+                else if(param[2]==16 && param[0]=="\\u"){
+                    destr+=param[0]+new Array(bu).join('0')+""+bfstrarr[i]+""+param[1];
+                }else{    
+                    destr+=param[0]+new Array(bu).join('0')+""+bfstrarr[i]+""+param[1];
+                }            
+            var afstr=document.getElementById('afstr');
+            afstr.value=destr;
+            }
+        }
+    </script>
+</head>
+<style>
+    #bg{
+        text-align: center;
+        margin:0 auto;
+        border:2px ridge black;
+        width:1200px;
+        height:700px; 
+    }
+    #header{
+        background: white;
+        border-bottom: 7px solid black;
+        height:60px;
+        padding-top: 10px;
+    }
+    #left{
+        float: left;
+        border: 2px solid black;
+        width: 500px;
+        height: 500px;
+        margin-left: 50px; 
+        margin-top: 20px; 
+    }
+    #right{
+        float: right;
+        border: 2px solid black;
+        width: 500px;
+        height: 500px;
+        margin-right: 50px; 
+        margin-top: 20px; 
+    }
+    #mid{
+        float: left;
+        border: 2px solid black;
+        width: 70px;
+        height: 500px;
+        margin-left: 10px; 
+        margin-top: 20px;        
+    }
+    #tip{
+         
+        margin-top: 15px;
+        margin-bottom: 0px;
+        height: 20px; 
+        text-align: center;
+        color: black;
+    }
+    .param{
+        margin-left: 2px;
+        width: 55px;
+    }
+</style>
+<body>
+    <div id="bg">
+        <div id="header">
+            <h1 style="display:inline;">XSS编码转换器</h1>-made by vk
+        </div>
+ 
+        <!--主体 -->
+        <form action="" method="post">
+        <div id="tip">
+            提示：左边区域输入待转码的字符
+        </div>
+        <div id="left">
+            <textarea name="bfstr" id="bfstr" cols="30" rows="10"
+            style="resize:none; width:490px; height:490px; " ></textarea>
+        </div>
+        <div id="mid">
+                <p style="padding-top: 10px; margin: 0px;">前缀：<br></p>
+                <select name="bf" id="bf" class="param">
+                    <option value="&#">&#</option>
+                    <option value="\u">\u</option>
+                    <option value="\x">\x</option>
+                    <option value="\">\</option>
+                    <option value="%">%</option>
+                    <option value=" "> </option>
+                </select>
+                <br><br>
+                后缀：
+                <input type="text" id="af" name="af" value=";" class="param" />
+                <br><br>
+                进制：
+                <select name="jz" id="jz" class="param">
+                    <option value="8">8</option>
+                    <option value="10">10</option>
+                    <option value="16">16</option>
+                </select>
+                <br><br>
+                位数：
+                <input type="text" id="num" name="num" value="4" class="param" />
+                <br><br>
+                <input type="button" id="" name="" value="编码-->" class="param" onclick="enxsscode()"/>
+                <br><br>
+                <input type="button" id="" name="" value="<--解码" class="param"style="padding-left: 2px" onclick="alert('未实现')"/>
+                <br><br>
+                <input type="button" id="" name="" value="jsfuck" class="param" onclick="alert('未实现')"/>
+        </div>
+        <div id="right">
+            <textarea name="afstr" id="afstr" cols="30" rows="10" style="resize:none; width:490px; height:490px; " ></textarea>
+        </div>
+        </form>
+    </div>
+</body>
+</html>
