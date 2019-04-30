@@ -1,5 +1,5 @@
 {% extends "indexBase.html" %}
-{% block home %}
+{% block indexBase %}
 <!--home-->
 <div class="row">
     <div class="col-lg-12">
@@ -16,8 +16,8 @@
                 {% for article in articles %}
                 <tr>
                     <td>{{ article.article_id }}</td>
-                    <td><a href="/article/{{ article.article_id }}">{{ article.article_title }}</a></td>
-                    <td>{{ article.article_content }}</td>
+                    <td><a href="/article/{{ article.article_id }}">{{ article.article_title | truncate(20) }}</a></td>
+                    <td>{{ article.article_content | truncate(20) }}</td>
                     <td>{{ article.article_date }}</td>
                 </tr>
                 {% endfor %}

@@ -1,0 +1,16 @@
+{% extends "indexBase.html" %}
+{% block indexBase %}
+<!--lab-->
+<div class="row">
+    <div class="col-lg-12">
+        <ul class="list-group">
+            {% for lab in labs %}
+                <a href="/{{ lab.name }}" class="list-group-item" target="_blank">
+                    <h4 class="list-group-item-heading">{{ lab.name }}</h4>
+                    <p class="list-group-item-text">{{ lab.introduce }}</p>
+                </a>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "adminBase.html" %}
+{% block adminBase %}
+<div class="row">
+    <div class="col-lg-2">
+        <img src="static/images/ujscanner.png" width="100%" height="100%" alt="ujs-sec-logo">
+    </div>
+    <div class="col-lg-10 text-center">
+        <h1>UJScanner Demo</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-6">
+        <div class="well">
+            <form class="form-horizontal">
+                <fieldset>
+                    <legend>配置面板</legend>
+                    <div class="form-group">
+                        <label for="sigleTarget" class="col-lg-2 control-label">目标网站</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="sigleTarget" placeholder="待检测网站" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox">递归扫描
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="content" class="col-lg-2 control-label">测试</label>
+                        <div class="col-lg-10">
+                            <textarea class="form-control" rows="3" id="textArea"></textarea>
+                            <span class="help-block">balabala配置</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">请求方式</label>
+                        <div class="col-lg-10">
+                            <div class="radio">
+                                <label>
+                                    <input name="optionsRadios" id="optionsRadios1" value="option1" checked="" type="radio">
+                                    GET
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input name="optionsRadios" id="optionsRadios2" value="option2" type="radio">
+                                    POST
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="select" class="col-lg-2 control-label">扫描模式</label>
+                        <div class="col-lg-10">
+                            <select class="form-control" id="select">
+                                <option>字典模式</option>
+                                <option>纯爆破模式</option>
+                                <option>爬虫动态字典模式</option>
+                                <option>fuzz模式</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-10 col-lg-offset-2">
+                            <button type="submit" class="btn btn-default">保存配置</button>
+                            <button type="submit" class="btn btn-primary">开始检测</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="well">
+            <form class="form-horizontal">
+                <fieldset>
+                    <legend>实时信息</legend>
+                    <div class="progress progress-striped active">
+                        <div class="progress-bar progress-bar-info" style="width: 85%"></div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

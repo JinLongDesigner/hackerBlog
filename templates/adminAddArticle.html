@@ -1,5 +1,5 @@
 {% extends "adminBase.html" %}
-{% block adminArticles %}
+{% block adminBase %}
 <!--adminAddArticle-->
 <div class="row">
     <div class="col-lg-12">
@@ -9,13 +9,13 @@
                     <h1>Add</h1>
                     <hr>
                     <div class="form-group">
-                        <label for="inputPassword" class="col-lg-2 control-label">title</label>
+                        <label for="title" class="col-lg-2 control-label">title</label>
                         <div class="col-lg-10">
                             <input class="form-control" id="inputTitle" name="title" value="" type="text">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="textArea" class="col-lg-2 control-label">content</label>
+                        <label for="content" class="col-lg-2 control-label">content</label>
                         <div class="col-lg-10">
                             <textarea class="form-control" rows="20" name="content"></textarea>
                         </div>

@@ -12,11 +12,11 @@
     <link rel="stylesheet" crossorigin="anonymous" href="/static/css/main.css">
     <style>
         body::-webkit-scrollbar {
-                display: none;
-            }
-            
+            display: none;
+        }
+
         #myBody {
-                width: 100vw;
+            width: 100vw;
         }
 
         .tall-row {
@@ -40,7 +40,7 @@
 <body id="myBody">
     <!--页眉航栏-->
     <nav class="navbar navbar-default navbar-static-top">
-        <div class="container" >
+        <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
                     aria-expanded="false" aria-controls="navbar">
@@ -53,6 +53,9 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/login" target="_blank">login</a>
+                    </li>
                     <li>
                         <a href="/admin" target="_blank">admin</a>
                     </li>
@@ -69,28 +72,13 @@
                     <li class=""><a aria-expanded="false" href="home">Home</a></li>
                     <li class=""><a aria-expanded="false" href="story">Story</a></li>
                     <li class=""><a aria-expanded="false" href="project">Project</a></li>
+                    <li class=""><a aria-expanded="false" href="lab">Lab</a></li>
                     <li class=""><a aria-expanded="false" href="ujssec">Ujs-sec</a></li>
                     <li class=""><a aria-expanded="false" href="friend">Friend</a></li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
-                    <div class="tab-pane fade active in" id="home">
-                        {% block home %}
-                        {% endblock %}
-                    </div>
-                    <div class="tab-pane fade active in" id="story">
-                        {% block story %}
-                        {% endblock %}
-                    </div>
-                    <div class="tab-pane fade active in" id="project">
-                        {% block project %}
-                        {% endblock %}
-                    </div>
-                    <div class="tab-pane fade active in" id="ujssec">
-                        {% block ujssec %}
-                        {% endblock %}
-                    </div>
-                    <div class="tab-pane fade active in" id="friend">
-                        {% block friend %}
+                    <div class="tab-pane fade active in">
+                        {% block indexBase %}
                         {% endblock %}
                     </div>
                 </div>

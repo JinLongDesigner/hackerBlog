@@ -58,6 +58,7 @@
                             aria-expanded="false">admin<span class="caret"></span> </a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="/admin/add">Add</a></li>
+                            <li><a href="/admin/logout">Logout</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -65,7 +66,7 @@
         </div>
     </nav>
     <div class="container">
-        {% block adminArticles %}
+        {% block adminBase %}
         {% endblock %}
         <!--页脚-->
         <div class="row tall-row">

@@ -6,21 +6,19 @@ from flask import (Flask, abort, flash, redirect, render_template, request,
                    url_for)
 
 from exist import db
-from models import Articles, project
+from models import Articles, project, Lab
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'secret string')
-db.init_app(app)
-
 # SQLite URI compatible
 WIN = sys.platform.startswith('win')
 if WIN:
     prefix = 'sqlite:///'
 else:
     prefix = 'sqlite:////'
-
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', prefix + os.path.join(app.root_path, 'data.db'))
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+db.init_app(app)
 
 @app.route('/')
 @app.route('/home')
@@ -43,6 +41,16 @@ def projectView():
     projects.append(project('dirmap'))
     projects.append(project('hackerblog'))
     return render_template("project.html",projects=projects)
+
+@app.route('/lab')
+def labView():
+    labs = []
+    labs.append(Lab('rmre','文本去重复工具'))
+    labs.append(Lab('xsspayload','xss常用payload'))
+    labs.append(Lab('xsshex','xss编码工具'))
+    labs.append(Lab('base64','base64编解码工具'))
+    labs.append(Lab('ujscanner','扫描器web UI'))
+    return render_template("lab.html",labs=labs)
 
 @app.route('/ujssec')
 def ujssecView():
@@ -88,6 +96,15 @@ def deleteArticleView(article_id):
     flash('Delete article succeed!')
     return redirect(url_for('adminArticlesView'))
 
+@app.route('/login')
+def login():
+    return render_template('adminLogin.html')
+
+#扫描器web ui
+@app.route('/ujscanner')
+def ujscanner():
+    return render_template('ujscanner.html')
+
 #小彩蛋
 @app.route('/AreYouAHacker/<string:msg>')
 def hackerMsg(msg):
@@ -102,9 +119,9 @@ def hackerMsg(msg):
 def rmre():
     return render_template('rmre.html')
 
-@app.route('/htmlencode')
-def htmlencode():
-    return render_template('htmlencode.html')
+@app.route('/xsspayload')
+def xsspayload():
+    return render_template('xsspayload.html')
 
 @app.route('/xsshex')
 def xsshex():

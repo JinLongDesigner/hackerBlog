@@ -1,5 +1,5 @@
 {% extends "adminBase.html" %}
-{% block adminArticles %}
+{% block adminBase %}
 <!--adminArticles-->
 <div class="row">
     <div class="col-lg-12">
@@ -17,8 +17,8 @@
                 {% for article in articles %}
                 <tr>
                     <td>{{ article.article_id }}</td>
-                    <td>{{ article.article_title }}</td>
-                    <td>{{ article.article_content }}</td>
+                    <td>{{ article.article_title | truncate(20) }}</td>
+                    <td>{{ article.article_content | truncate(20) }}</td>
                     <td>{{ article.article_date }}</td>
                     <td><a href="/admin/edit/{{ article.article_id }}">edit</a>|<a href="/admin/del/{{ article.article_id }}">delete</a></td>
                 </tr>
