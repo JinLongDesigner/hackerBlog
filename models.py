@@ -23,7 +23,7 @@ class Articles(db.Model):
     article_content = db.Column(db.Text, nullable=False)
     article_date = db.Column(db.Text, default=time.strftime('%Y-%m-%d', time.localtime(time.time())))
 
-
+PROFILE_FILE = {'test':'test'}
 class User(UserMixin):
     def __init__(self, username):
         self.username = username

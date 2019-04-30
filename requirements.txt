@@ -4,3 +4,7 @@ flask-script
 flask-migrate
 flask-login
 uwsgi
+gevent
+requests
+progressbar2
+lxml
