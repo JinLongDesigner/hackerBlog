@@ -1,0 +1,266 @@
+{% extends "adminBase.html" %}
+{% block adminBase %}
+<div class="row">
+    <div class="col-lg-2">
+        <img src="/static/images/ujscanner.png" width="100%" height="100%" alt="ujs-sec-logo">
+    </div>
+    <div class="col-lg-10 text-center">
+        <h1>UJScanner Demo</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="well">
+            <form class="form-horizontal" method="POST">
+                <fieldset>
+                    <legend>添加配置</legend>
+                    <div class="form-group">
+                        <label for="recursive_scan" class="col-lg-2 control-label">递归扫描</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="recursive_scan" value="0" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="recursive_scan" class="col-lg-2 control-label">递归的状态码</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="recursive_status_code" value="[301,403]" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exclude_subdirs" class="col-lg-2 control-label">递归扫描排除的子目录</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="exclude_subdirs" value="['/test1','/test2']" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="dict_mode" class="col-lg-2 control-label">字典模式</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="dict_mode" value="1" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="dict_mode_load_single_dict" class="col-lg-2 control-label">加载单字典</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="dict_mode_load_single_dict" value="dict_mode_dict.txt"
+                                type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="dict_mode_load_mult_dict" class="col-lg-2 control-label">加载多字典</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="dict_mode_load_mult_dict" value="dictmult" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="blast_mode" class="col-lg-2 control-label">爆破模式</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="blast_mode" value="0" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="blast_mode_min" class="col-lg-2 control-label">爆破最小长度</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="blast_mode_min" value="3" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="blast_mode_max" class="col-lg-2 control-label">爆破最大长度</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="blast_mode_max" value="3" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="blast_mode_custom_charset" class="col-lg-2 control-label">自定义字符集</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="blast_mode_custom_charset" value="abc" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="blast_mode_resume_charset" class="col-lg-2 control-label">自定义继续字符集</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="blast_mode_resume_charset" value="" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="crawl_mode" class="col-lg-2 control-label">爬虫模式</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="crawl_mode" value="0" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="crawl_mode_parse_robots" class="col-lg-2 control-label">爬虫解析robots开关</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="crawl_mode_parse_robots" value="0" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="crawl_mode_parse_html" class="col-lg-2 control-label">爬虫解析html的xpath</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="crawl_mode_parse_html"
+                                value="//*/@href | //*/@src | //form/@action" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="crawl_mode_dynamic_fuzz" class="col-lg-2 control-label">爬虫动态字典开关</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="crawl_mode_dynamic_fuzz" value="1" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="fuzz_mode" class="col-lg-2 control-label">fuzz模式</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="fuzz_mode" value="1" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="fuzz_mode_load_single_dict" class="col-lg-2 control-label">加载单字典模式</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="fuzz_mode_load_single_dict" value="fuzz_mode_dir.txt"
+                                type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="fuzz_mode_load_mult_dict" class="col-lg-2 control-label">加载多字典模式</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="fuzz_mode_load_mult_dict" value="fuzzmult" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="fuzz_mode_label" class="col-lg-2 control-label">fuzz标签</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="fuzz_mode_label" value="{dir}" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="request_headers" class="col-lg-2 control-label">请求头</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="request_headers" placeholder="test1=test1,test2=test2"
+                                value="" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="request_header_ua" class="col-lg-2 control-label">User-Agent</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="request_header_ua"
+                                value="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36"
+                                type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="request_header_cookie" class="col-lg-2 control-label">Cookie</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="request_header_cookie" value="" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="request_header_401_auth" class="col-lg-2 control-label">401 Auth</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="request_header_401_auth" value="" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="request_method" class="col-lg-2 control-label">请求方法</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="request_method" value="get" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="request_timeout" class="col-lg-2 control-label">请求超时</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="request_timeout" value="3" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="request_delay" class="col-lg-2 control-label">请求随机延时</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="request_delay" value="0" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="request_limit" class="col-lg-2 control-label">请求并发数</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="request_limit" value="30" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="request_max_retries" class="col-lg-2 control-label">请求重试次数</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="request_max_retries" value="1" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="request_persistent_connect" class="col-lg-2 control-label">请求保持连接</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="request_persistent_connect" value="0" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="redirection_302" class="col-lg-2 control-label">跟随302重定向</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="redirection_302" value="False" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="file_extension" class="col-lg-2 control-label">payload后缀</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="file_extension" placeholder=".php" value="" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="response_status_code" class="col-lg-2 control-label">响应的状态码</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="response_status_code" value="[200]" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="response_header_content_type"
+                            class="col-lg-2 control-label">记录响应的content-type</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="response_header_content_type" value="1" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="response_size" class="col-lg-2 control-label">记录响应的页面大小</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="response_size" value="1" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="auto_check_404_page" class="col-lg-2 control-label">自动检测404开关</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="auto_check_404_page" value="True" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="skip_size" class="col-lg-2 control-label">跳过大小为x的页面</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="skip_size" placeholder="None;0b;1k;1m" value="None"
+                                type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="proxy_server" class="col-lg-2 control-label">请求代理</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="proxy_server"
+                                placeholder="{'http':'http://127.0.0.1:8080','https':'https://127.0.0.1:8080'}"
+                                value="None" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="debug" class="col-lg-2 control-label">debug模式</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="debug" value="0" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-10 col-lg-offset-2">
+                            <a class="btn btn-default" href="/ujscanner">扫描面板</a>
+                            <button type="submit" class="btn btn-default" onclick="alert('已保存')">保存配置</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

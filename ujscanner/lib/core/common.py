@@ -5,17 +5,17 @@
 @Author: xxlin
 @LastEditors: xxlin
 @Date: 2019-04-10 13:27:58
-@LastEditTime: 2019-04-12 14:15:26
+@LastEditTime: 2019-05-03 16:31:50
 '''
 
 import os.path
 import sys
 import urllib
 
-from lib.core.data import cmdLineOptions, conf, paths, payloads
-from lib.core.enums import COLOR
-from lib.core.setting import BANNER
-from thirdlib.colorama import Back, Fore, Style, init
+from ujscanner.lib.core.data import cmdLineOptions, conf, paths, payloads
+from ujscanner.lib.core.enums import COLOR
+from ujscanner.lib.core.setting import BANNER
+from ujscanner.thirdlib.colorama import Back, Fore, Style, init
 
 init(autoreset=True)
 class Outputscreen:
@@ -56,19 +56,12 @@ def setPaths():
     if not os.path.exists(paths.DATA_PATH):
         os.mkdir(paths.DATA_PATH)
 
-    # paths.WEAK_PASS = os.path.join(paths.DATA_PATH, "pass100.txt")
-    # paths.LARGE_WEAK_PASS = os.path.join(paths.DATA_PATH, "pass1000.txt")
-    # paths.UA_LIST_PATH = os.path.join(paths.DATA_PATH, "user-agents.txt")
-
     if os.path.isfile(paths.CONFIG_PATH):
         pass
     else:
         msg = 'Config files missing, it may cause an issue.\n'
         outputscreen.error(msg)
         sys.exit(0)
-    
-    #print(root_path,paths.DATA_PATH,paths.SCRIPT_PATH,paths.OUTPUT_PATH,paths.CONFIG_PATH)
-    #print(paths.WEAK_PASS,paths.LARGE_WEAK_PASS,paths.UA_LIST_PATH)
 
 def banner():
     '''

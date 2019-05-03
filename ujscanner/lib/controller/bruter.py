@@ -5,16 +5,18 @@
 @Author: xxlin
 @LastEditors: xxlin
 @Date: 2019-03-14 09:49:05
-@LastEditTime: 2019-04-14 12:05:52
+@LastEditTime: 2019-05-03 21:00:00
 '''
 
 import configparser
+import hashlib
 import os
 import random
 import re
 import sys
 import time
 import urllib
+import traceback
 
 import gevent
 import progressbar
@@ -22,9 +24,10 @@ import requests
 from gevent.queue import Queue
 from lxml import etree
 
-from lib.core.common import intToSize, outputscreen, urlSimilarCheck
-from lib.core.data import bar, conf, paths, payloads, tasks, th
-from lib.utils.config import ConfigFileParser
+from ujscanner.lib.core.common import intToSize, outputscreen, urlSimilarCheck
+from ujscanner.lib.core.data import bar, conf, paths, payloads, tasks, th
+from ujscanner.lib.plugins.inspector import Inspector
+from ujscanner.lib.utils.console import getTerminalSize
 
 #防止ssl未校验时出现提示信息
 requests.packages.urllib3.disable_warnings()
@@ -44,6 +47,9 @@ payloads.fuzz_mode_dict = list()
 tasks.all_task = Queue()
 tasks.task_length = 0
 tasks.task_count = 0
+
+#假性404页面md5列表
+conf.autodiscriminator_md5 = set()
 
 bar.log = progressbar.ProgressBar()
 
@@ -65,61 +71,7 @@ def saveResults(domain,msg):
             pass
         else:
             result_file.write(msg+'\n')
-
-def loadConf():
-    """
-    加载扫描配置(以后将使用参数，而非从文件加载)
-    """
-
-    conf.recursive_scan = eval(ConfigFileParser().recursive_scan())
-    conf.recursive_status_code = eval(ConfigFileParser().recursive_status_code())
-    conf.exclude_subdirs = eval(ConfigFileParser().exclude_subdirs())
-        
-    conf.dict_mode = eval(ConfigFileParser().dict_mode())
-    conf.dict_mode_load_single_dict = os.path.join(paths.DATA_PATH,eval(ConfigFileParser().dict_mode_load_single_dict()))
-    conf.dict_mode_load_mult_dict = os.path.join(paths.DATA_PATH,eval(ConfigFileParser().dict_mode_load_mult_dict()))
-    conf.blast_mode = eval(ConfigFileParser().blast_mode())
-    conf.blast_mode_min = eval(ConfigFileParser().blast_mode_min())
-    conf.blast_mode_max = eval(ConfigFileParser().blast_mode_max())
-    conf.blast_mode_az = eval(ConfigFileParser().blast_mode_az())
-    conf.blast_mode_num = eval(ConfigFileParser().blast_mode_num())
-    conf.blast_mode_custom_charset = eval(ConfigFileParser().blast_mode_custom_charset())
-    conf.blast_mode_resume_charset = eval(ConfigFileParser().blast_mode_resume_charset())
-    conf.crawl_mode = eval(ConfigFileParser().crawl_mode())
-    conf.crawl_mode_parse_robots = eval(ConfigFileParser().crawl_mode_parse_robots())
-    conf.crawl_mode_parse_html = eval(ConfigFileParser().crawl_mode_parse_html())
-    conf.crawl_mode_dynamic_fuzz = eval(ConfigFileParser().crawl_mode_dynamic_fuzz())
-    conf.fuzz_mode = eval(ConfigFileParser().fuzz_mode())
-    conf.fuzz_mode_load_single_dict = os.path.join(paths.DATA_PATH,eval(ConfigFileParser().fuzz_mode_load_single_dict()))
-    conf.fuzz_mode_load_mult_dict = os.path.join(paths.DATA_PATH,eval(ConfigFileParser().fuzz_mode_load_mult_dict()))
-    conf.fuzz_mode_label = eval(ConfigFileParser().fuzz_mode_label())
-
-    conf.request_headers = eval(ConfigFileParser().request_headers())
-    conf.request_header_ua = eval(ConfigFileParser().request_header_ua())
-    conf.request_header_cookie = eval(ConfigFileParser().request_header_cookie())
-    conf.request_header_401_auth = eval(ConfigFileParser().request_header_401_auth())
-    conf.request_timeout = eval(ConfigFileParser().request_timeout())
-    conf.request_delay = eval(ConfigFileParser().request_delay())
-    conf.request_limit = eval(ConfigFileParser().request_limit())
-    conf.request_max_retries = eval(ConfigFileParser().request_max_retries())
-    conf.request_persistent_connect = eval(ConfigFileParser().request_persistent_connect())
-    conf.request_method = eval(ConfigFileParser().request_method())
-    conf.redirection_302 = eval(ConfigFileParser().redirection_302())
-    conf.file_extension = eval(ConfigFileParser().file_extension())
-
-    conf.response_status_code = eval(ConfigFileParser().response_status_code())
-    conf.response_header_content_type = eval(ConfigFileParser().response_header_content_type())
-    conf.response_size = eval(ConfigFileParser().response_size())
-    conf.custom_404_page = eval(ConfigFileParser().custom_404_page())
-    conf.custom_503_page = eval(ConfigFileParser().custom_503_page())
-    conf.custom_response_page = eval(ConfigFileParser().custom_response_page())
-    conf.skip_size = eval(ConfigFileParser().skip_size())
-
-    conf.proxy_server = eval(ConfigFileParser().proxy_server())
-
-    conf.debug = eval(ConfigFileParser().debug())
-    conf.update = eval(ConfigFileParser().update())
-
+    
 def recursiveScan(response_url,all_payloads):
     '''
     @description: 检测出一级目录后，一级目录后遍历添加所有payload，继续检测
@@ -166,9 +118,9 @@ def loadMultDict(path):
             if conf.dict_mode and conf.fuzz_mode:
                 outputscreen.error('[x] Can not use dict and fuzz mode at the same time!')
                 sys.exit()
-            if conf.dict_mode == 2:
+            if conf.dict_mode == '2':
                 tmp_list.extend(loadSingleDict(os.path.join(conf.dict_mode_load_mult_dict,file)))
-            if conf.fuzz_mode == 2:
+            if conf.fuzz_mode == '2':
                 tmp_list.extend(loadSingleDict(os.path.join(conf.fuzz_mode_load_mult_dict,file)))
         return tmp_list
     except  Exception as e:
@@ -306,16 +258,18 @@ def generateMultFuzzDict(path):
             payloads.fuzz_mode_dict.append(fuzz_path.replace(conf.fuzz_mode_label,i))
         return payloads.fuzz_mode_dict
 
-def ScanModeHandler():
+def scanModeHandler():
     '''
     @description: 选择扫描模式，加载payloads，一次只能加载一个模式，TODO:可一次运行多个模式
     @param {type} 
     @return: 
     '''
     if conf.recursive_scan:
-        outputscreen.warning('[*] Use recursive scan: Yes')
+        msg = '[*] Use recursive scan: Yes'
+        outputscreen.warning('\r'+msg+' '*(th.console_width-len(msg)+1))
     else:
-        outputscreen.warning('[*] Use recursive scan: No')
+        msg = '[*] Use recursive scan: No'
+        outputscreen.warning('\r'+msg+' '*(th.console_width-len(msg)+1))
     if conf.dict_mode:
         outputscreen.warning('[*] Use dict mode')
         if conf.dict_mode == 1:
@@ -379,16 +333,19 @@ def responseHandler(response):
     #跳过大小为skip_size的页面
     if size == conf.skip_size:
         return
-    #自定义404页面
-    if conf.custom_404_page in response.text:
-        return
+    
+    #自动识别404-判断是否与获取404页面特征匹配
+    if conf.auto_check_404_page:
+        if hashlib.md5(response.content).hexdigest() in conf.autodiscriminator_md5:
+            return
+
     #自定义状态码显示
     if response.status_code in conf.response_status_code:
-        msg = '['+str(response.status_code)+']'
+        msg = '[{}]'.format(str(response.status_code))
         if conf.response_header_content_type:
-            msg += '['+response.headers['content-type']+']'
+            msg += '[{}]'.format(response.headers['content-type'])
         if conf.response_size:
-            msg += '['+str(size)+']'
+            msg += '[{}]'.format(str(size))
         msg += response.url
         outputscreen.info('\r'+msg+' '*(th.console_width-len(msg)+1))
         #已去重复，结果保存。NOTE:此处使用response.url进行文件名构造，解决使用-iL参数时，不能按照域名来命名文件名的问题
@@ -416,7 +373,7 @@ def worker():
         try:
             for header in conf.request_headers.split(','):
                 k, v = header.split('=')
-                print(k,v)
+                #print(k,v)
                 headers[k] = v
         except Exception as e:
             outputscreen.error("[x] Check personalized headers format: header=value,header=value.\n[x] error:{}".format(e))
@@ -458,13 +415,51 @@ def boss():
     while not tasks.all_task.empty():
         worker()
 
+def initEngine():
+    # init control parameter
+    th.result = []
+    th.thread_num = 30
+    th.target = conf.target
+    #是否继续扫描标志位
+    th.is_continue = True
+    #控制台宽度
+    th.console_width = getTerminalSize()[0] - 2
+    #记录开始时间
+    th.start_time = time.time()
+    msg = '[+] Set the number of thread: %d' % th.thread_num
+    outputscreen.success(msg)
+
+def scan():
+    while True:
+        #协程模式
+        if th.target.qsize() > 0 and th.is_continue:
+            target = str(th.target.get(timeout=1.0))
+        else:
+            break
+        try:
+            #对每个target进行检测
+            bruter(target)
+        except Exception:
+            #抛出异常时，添加errmsg键值
+            th.errmsg = traceback.format_exc()
+            th.is_continue = False
+
+def test():
+    initEngine()
+    # Coroutine mode
+    outputscreen.success('[+] Coroutine mode')
+    gevent.joinall([gevent.spawn(scan) for i in range(0, th.thread_num)])
+    if 'errmsg' in th:
+        outputscreen.error(th.errmsg)
+
 def bruter(url):
     '''
     @description: 扫描插件入口函数
     @param {url:目标} 
     @return: 
     '''
-    #全局url，给crawl、fuzz模块使用。FIXME
+    print(conf.dict_mode_load_single_dict)
+    #全局target的url，给crawl、fuzz模块使用。XXX:要放在填补url之前，否则fuzz模式会出现这样的问题：https://axblog.top/phpinfo.{dir}/
     conf.url = url
     #url初始化
     conf.parsed_url = urllib.parse.urlparse(url)
@@ -476,9 +471,21 @@ def bruter(url):
     if not url.endswith('/'):
         url = url + '/'
 
+    #打印当前target
+    msg = '[+] Current target: {}'.format(url)
+    outputscreen.success('\r'+msg+' '*(th.console_width-len(msg)+1))
+    #自动识别404-预先获取404页面特征
+    if conf.auto_check_404_page:
+        outputscreen.warning("[*] Launching auto check 404")
+        # Autodiscriminator (probably deprecated by future diagnostic subsystem)
+        i = Inspector(url)
+        (result, notfound_type) = i.check_this()
+        if notfound_type == Inspector.TEST404_MD5 or notfound_type == Inspector.TEST404_OK:
+            conf.autodiscriminator_md5.add(result)
+
     #加载payloads
     #添加payloads是否加载成功判断
-    payloads.all_payloads = ScanModeHandler()
+    payloads.all_payloads = scanModeHandler()
     if payloads.all_payloads == None:
         outputscreen.error('[x] load payloads error!')
         if conf.dict_mode:
@@ -509,11 +516,13 @@ def bruter(url):
             url_payload = conf.parsed_url.scheme + '://' + conf.parsed_url.netloc + payload
         else:
             url_payload = url + payload
+        #print(url_payload)
         #payload入队，等待处理
         tasks.all_task.put(url_payload)
     #设置进度条长度，若是递归模式，则不设置任务队列长度，即无法显示进度，仅显示耗时
     if not conf.recursive_scan:
-        tasks.task_length = tasks.all_task.qsize()
+        #NOTE:这里取所有payloads的长度*target数量计算任务总数，修复issue#2
+        tasks.task_length = len(payloads.all_payloads)*conf.target_nums
         bar.log.start(tasks.task_length)
     #FIXME:循环任务数不能一次性取完所有的task，暂时采用每次执行30个任务。这样写还能解决hub.LoopExit的bug
     while not tasks.all_task.empty():

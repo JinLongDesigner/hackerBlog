@@ -8,7 +8,7 @@
 @LastEditTime: 2019-04-10 17:46:40
 '''
 
-from lib.core.datatype import AttribDict
+from ujscanner.lib.core.datatype import AttribDict
 
 # dirmap paths
 paths = AttribDict()
